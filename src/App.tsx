@@ -12,6 +12,9 @@ function App() {
   useEffect(() => {
     // Suppress specific benign errors from console to clean up the developer experience
     const originalConsoleError = console.error;
+    const originalConsoleLog = console.log;
+    const originalConsoleInfo = console.info;
+
     console.error = (...args) => {
       if (
         typeof args[0] === 'string' &&
@@ -24,28 +27,38 @@ function App() {
       originalConsoleError(...args);
     };
 
+    const suppressWebSocketLog = (...args: any[]) => {
+      if (typeof args[0] === 'string' && args[0].includes('WebSocketInterceptor')) {
+        return;
+      }
+      originalConsoleLog(...args);
+    };
+
+    console.log = suppressWebSocketLog;
+    console.info = (...args) => {
+      if (typeof args[0] === 'string' && args[0].includes('WebSocketInterceptor')) {
+        return;
+      }
+      originalConsoleInfo(...args);
+    };
+
     // Handle unhandled promise rejections (like the SW fetch error)
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       if (event.reason instanceof TypeError && event.reason.message === 'Failed to fetch') {
         event.preventDefault(); // Prevent it from showing up as an uncaught error
         console.warn('Caught and suppressed a benign network fetch error (likely from Service Worker).');
+      } else if (event.reason instanceof DOMException && event.reason.name === 'InvalidStateError' && event.reason.message.includes('Only the active worker can claim clients')) {
+        event.preventDefault();
+        console.warn('Caught and suppressed a benign Service Worker state error.');
       }
     };
 
     window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-    // Unregister any rogue service workers that might be causing the fetch errors
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        for (const registration of registrations) {
-          registration.unregister();
-          console.log('Unregistered service worker to prevent fetch conflicts.');
-        }
-      }).catch(err => console.warn('Service Worker unregistration failed: ', err));
-    }
-
     return () => {
       console.error = originalConsoleError;
+      console.log = originalConsoleLog;
+      console.info = originalConsoleInfo;
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
   }, []);
