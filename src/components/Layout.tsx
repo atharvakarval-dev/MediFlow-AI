@@ -50,12 +50,6 @@ export function Layout() {
           "pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-500 mx-auto",
           isScrolled ? "bg-black/60 py-2 px-3" : "bg-black/40 py-2.5 px-4"
         )}>
-          <div className="flex items-center gap-3 pl-2 pr-4 border-r border-white/10">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shadow-inner border border-white/5">
-              <Activity className="w-4 h-4 text-white" />
-            </div>
-            <h1 className="text-base font-medium tracking-tight text-white hidden sm:block whitespace-nowrap">MedFlow AI</h1>
-          </div>
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -85,18 +79,9 @@ export function Layout() {
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto relative z-10 w-full h-full"
       >
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={location.pathname}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="pt-24 pb-10 min-h-full flex flex-col"
-          >
-            <Outlet />
-          </motion.div>
-        </AnimatePresence>
+        <div className="pt-24 pb-10 min-h-full flex flex-col">
+          <Outlet />
+        </div>
       </main>
 
       {/* Mobile Navigation */}

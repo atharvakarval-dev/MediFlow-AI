@@ -86,9 +86,10 @@ export function DoctorDashboard() {
   ];
 
   return (
-    <div className="flex h-full relative overflow-hidden">
-      {/* Left Sidebar - Patient Queue */}
-      <div className="w-80 liquid-glass-strong border-r border-white/10 flex flex-col h-full z-20 backdrop-blur-xl shadow-[8px_0_32px_rgba(0,0,0,0.2)] shrink-0">
+    <div className="flex-1 flex h-full relative overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="flex w-full h-full liquid-glass-strong rounded-[2.5rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden backdrop-blur-xl">
+        {/* Left Sidebar - Patient Queue */}
+        <div className="w-80 border-r border-white/10 flex flex-col h-full z-20 bg-black/20 shrink-0">
         <div className="p-6 border-b border-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-[150%] h-[150%] bg-white/5 blur-[80px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
           <div className="flex items-center justify-between mb-6 relative z-10">
@@ -317,7 +318,7 @@ export function DoctorDashboard() {
         </div>
 
         {/* Right Sidebar - Alerts & Upcoming */}
-        <div className="w-full xl:w-80 liquid-glass-strong border-l border-white/10 flex flex-col h-full z-20 backdrop-blur-xl shrink-0">
+        <div className="w-full xl:w-80 border-l border-white/10 flex flex-col h-full z-20 bg-black/20 shrink-0">
           <div className="p-6 border-b border-white/10">
             <h2 className="text-lg font-medium text-white flex items-center gap-2.5 tracking-tight">
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 shadow-inner">
@@ -364,6 +365,7 @@ export function DoctorDashboard() {
           </div>
         </div>
 
+      </div>
       </div>
 
       {/* Success Toast */}
