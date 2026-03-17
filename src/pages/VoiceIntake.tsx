@@ -129,6 +129,8 @@ export function VoiceIntake() {
       if (i > simulateSpeech.length) {
         clearInterval(interval);
         setConfidence(98);
+        setIsRecording(false);
+        setShowSeveritySelection(true);
       }
     }, 50);
   };
