@@ -159,7 +159,7 @@ export function VoiceIntake() {
       else if (severity === 'Moderate') priority = 'High';
       else priority = 'Low';
       
-      const allocation = allocateDoctor(englishSymptoms, priority, patientsQueue, severity, transcript || simulateSpeech);
+      const allocation = allocateDoctor(englishSymptoms, priority, patientsQueue, severity);
       
       updatePatient({
         transcript: transcript || simulateSpeech,

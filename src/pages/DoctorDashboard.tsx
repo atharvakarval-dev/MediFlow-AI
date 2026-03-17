@@ -341,7 +341,7 @@ export function DoctorDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1">{t.specialist || "Filter by Specialty"}</label>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">{t.specialty || "Filter by Specialty"}</label>
                       <select 
                         value={selectedSpecialty}
                         onChange={(e) => {
@@ -350,7 +350,7 @@ export function DoctorDashboard() {
                         }}
                         className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
                       >
-                        <option value="">All Specialties</option>
+                        <option value="">{t.allSpecialties || "All Specialties"}</option>
                         {specialties.map(spec => (
                           <option key={spec} value={spec}>{spec}</option>
                         ))}
