@@ -196,65 +196,73 @@ export function VoiceIntake() {
   };
 
   return (
-    <div 
-      className="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-[80vh]"
-    >
-      <div className="text-center mb-12 max-w-2xl">
-        <h1 className="text-4xl sm:text-5xl font-medium text-white mb-4 tracking-tight">{t.title}</h1>
-        <p className="text-lg sm:text-xl text-white/60 font-serif italic font-light">{t.subtitle}</p>
-      </div>
+    <div className="flex-1 flex flex-col items-center justify-center w-full max-w-5xl mx-auto px-4 sm:px-6 relative py-8">
+      
+      {/* Glassmorphic Container */}
+      <div className="w-full max-w-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] rounded-[2.5rem] p-8 sm:p-12 flex flex-col items-center relative overflow-hidden">
+        
+        {/* Background Atmosphere */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+          <div className={`w-[600px] h-[600px] rounded-full blur-[100px] transition-all duration-1000 ${isRecording ? 'bg-white/10 scale-110' : 'bg-white/5 scale-100'}`}></div>
+        </div>
 
-      <div className="relative w-full max-w-3xl liquid-glass-strong rounded-[2.5rem] p-8 md:p-12 flex flex-col items-center border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl overflow-hidden">
-        {/* Subtle background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-white/5 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="text-center mb-10 relative z-10">
+          <h1 className="text-3xl sm:text-4xl font-medium text-white mb-3 tracking-tight">{t.title}</h1>
+          <p className="text-base sm:text-lg text-white/50 font-light">{t.subtitle}</p>
+        </div>
 
-        {isRecording && (
-          <div className="absolute inset-0 bg-white/5 rounded-[2.5rem] animate-pulse -z-10"></div>
+        {!browserSupported && (
+          <div className="w-full max-w-md mb-8 p-4 bg-red-500/10 rounded-2xl flex items-start gap-3 text-red-200 border border-red-500/20 relative z-10">
+            <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" strokeWidth={2} />
+            <p className="text-sm font-medium leading-relaxed">{t.notSupported}</p>
+          </div>
         )}
 
-        <div className="mb-10 relative z-10">
-          <div className={`w-36 h-36 rounded-full flex items-center justify-center transition-all duration-500 shadow-inner border ${isRecording ? 'bg-white/20 border-white/30 scale-110 shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-white/10 border-white/10'}`}>
+        {/* Main Interaction Area */}
+        <div className="w-full flex flex-col items-center relative z-10">
+        
+        {/* Mic / Recording Indicator */}
+        <div className="mb-12 relative">
+          <div className={`w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-700 border ${
+            isRecording 
+              ? 'bg-white/10 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.15)] scale-105' 
+              : 'bg-black/20 border-white/10 shadow-inner hover:bg-white/5'
+          }`}>
             {isRecording ? (
               <div className="relative flex items-center justify-center">
-                <div className="absolute w-48 h-48 border-4 border-white/20 rounded-full animate-ping opacity-75"></div>
-                <div className="absolute w-40 h-40 border-4 border-white/30 rounded-full animate-pulse"></div>
-                <Mic className="w-14 h-14 text-white relative z-10" strokeWidth={1.5} />
+                <div className="absolute w-48 h-48 sm:w-56 sm:h-56 border border-white/20 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+                <div className="absolute w-40 h-40 sm:w-48 sm:h-48 border border-white/10 rounded-full animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite] delay-300"></div>
+                <Mic className="w-12 h-12 sm:w-16 sm:h-16 text-white relative z-10" strokeWidth={1} />
               </div>
             ) : (
-              <Mic className="w-14 h-14 text-white/60" strokeWidth={1.5} />
+              <Mic className="w-12 h-12 sm:w-16 sm:h-16 text-white/40" strokeWidth={1} />
             )}
           </div>
         </div>
 
-        {!browserSupported && (
-          <div className="w-full mb-6 p-5 liquid-glass rounded-2xl flex items-start gap-3 text-white/80 border border-white/10 relative z-10">
-            <AlertCircle className="w-6 h-6 shrink-0 mt-0.5 text-white/80" strokeWidth={1.5} />
-            <p className="text-base font-light leading-relaxed">{t.notSupported}</p>
-          </div>
-        )}
-
-        <div className="w-full min-h-[140px] liquid-glass rounded-3xl p-8 mb-10 relative z-10 border border-white/10 shadow-inner">
+        {/* Transcript Display */}
+        <div className="w-full min-h-[120px] flex flex-col items-center justify-center mb-12">
           {showPrompt ? (
-            <p className="text-white/50 text-center italic text-xl flex items-center justify-center gap-3 font-serif h-full">
-              <Volume2 className="w-6 h-6" strokeWidth={1.5} /> {t.prompt}
+            <p className="text-white/40 text-center italic text-xl sm:text-2xl flex items-center justify-center gap-3 font-serif font-light">
+              <Volume2 className="w-6 h-6 opacity-50" strokeWidth={1.5} /> {t.prompt}
             </p>
           ) : (
-            <div className="flex flex-col h-full justify-between">
-              <p className="text-white/90 text-xl leading-relaxed font-light tracking-wide">
+            <div className="flex flex-col items-center w-full">
+              <p className="text-white text-2xl sm:text-3xl leading-relaxed font-serif font-light text-center max-w-2xl">
                 {transcript}
-                {isRecording && <span className="inline-block w-2.5 h-6 bg-white/60 ml-2 animate-pulse align-middle"></span>}
+                {isRecording && <span className="inline-block w-3 h-8 bg-white/40 ml-2 animate-pulse align-middle"></span>}
               </p>
               
-              {confidence !== null && (
+              {confidence !== null && !isRecording && (
                 <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 flex items-center gap-3 text-sm font-medium border-t border-white/10 pt-5"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-6 flex items-center gap-2 text-xs font-medium"
                 >
-                  <span className="text-white/50 uppercase tracking-widest text-xs">{t.confidenceScore}</span>
-                  <div className={`px-3 py-1.5 rounded-lg flex items-center gap-1 border ${
-                    confidence > 80 ? 'bg-white/20 text-white border-white/30' : 
-                    confidence > 60 ? 'bg-white/10 text-white/80 border-white/20' : 
+                  <span className="text-white/40 uppercase tracking-widest">{t.confidenceScore}</span>
+                  <div className={`px-2.5 py-1 rounded-md flex items-center gap-1 border ${
+                    confidence > 80 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
+                    confidence > 60 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 
                     'bg-white/5 text-white/60 border-white/10'
                   }`}>
                     {confidence}%
@@ -265,26 +273,27 @@ export function VoiceIntake() {
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-5 w-full relative z-10">
+        {/* Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
           {!isRecording && !isProcessing && !showSeveritySelection && (
             <>
               {browserSupported && (
                 <button 
                   onClick={handleStartRecording}
-                  className="w-full sm:w-auto bg-white hover:bg-gray-100 text-black px-10 py-5 rounded-full font-medium text-lg transition-all duration-500 flex items-center justify-center gap-3 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                  className="w-full sm:w-auto bg-white hover:bg-gray-100 text-black px-8 py-4 rounded-full font-medium text-base transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.15)]"
                 >
-                  <Mic className="w-6 h-6 text-black" strokeWidth={1.5} /> {t.start}
+                  <Mic className="w-5 h-5" strokeWidth={2} /> {t.start}
                 </button>
               )}
               <button 
                 onClick={handleSimulateRecording}
-                className={`w-full sm:w-auto px-10 py-5 rounded-full font-medium text-lg transition-all duration-500 flex items-center justify-center gap-3 hover:scale-105 border ${
+                className={`w-full sm:w-auto px-8 py-4 rounded-full font-medium text-base transition-all duration-300 flex items-center justify-center gap-2 border ${
                   browserSupported 
-                    ? 'liquid-glass text-white/80 hover:text-white hover:bg-white/20 border-white/10 hover:border-white/20' 
-                    : 'liquid-glass hover:bg-white/20 text-white border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)]'
+                    ? 'bg-black/20 text-white/80 hover:text-white hover:bg-white/10 border-white/10' 
+                    : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
                 }`}
               >
-                <PlayCircle className="w-6 h-6" strokeWidth={1.5} /> {t.simulateBtn}
+                <PlayCircle className="w-5 h-5" strokeWidth={2} /> {t.simulateBtn}
               </button>
             </>
           )}
@@ -292,58 +301,66 @@ export function VoiceIntake() {
           {isRecording && !isProcessing && !showSeveritySelection && (
             <button 
               onClick={handleStopRecording}
-              className="w-full sm:w-auto bg-white hover:bg-gray-100 text-red-600 px-12 py-5 rounded-full font-medium text-lg transition-all duration-500 flex items-center justify-center gap-3 animate-pulse shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+              className="w-full sm:w-auto bg-white hover:bg-gray-100 text-red-600 px-10 py-4 rounded-full font-medium text-base transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.2)]"
             >
-              <Square className="w-6 h-6 fill-current" strokeWidth={1.5} /> {t.stop}
+              <Square className="w-5 h-5 fill-current" strokeWidth={2} /> {t.stop}
             </button>
           )}
 
           {isProcessing && (
-            <div className="flex flex-col items-center text-white">
-              <Loader2 className="w-12 h-12 animate-spin mb-5 text-white/80" strokeWidth={1.5} />
-              <p className="font-medium text-xl tracking-tight">{t.analyzing}</p>
+            <div className="flex flex-col items-center text-white/80">
+              <Loader2 className="w-8 h-8 animate-spin mb-3" strokeWidth={2} />
+              <p className="font-medium text-sm tracking-widest uppercase">{t.analyzing}</p>
             </div>
           )}
         </div>
 
+        {/* Severity Selection */}
         <AnimatePresence>
           {showSeveritySelection && (
             <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="w-full mt-10 pt-10 border-t border-white/10 relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="w-full mt-8"
             >
-              <h3 className="text-xl font-medium text-white mb-8 text-center flex items-center justify-center gap-3 tracking-tight">
-                <Activity className="w-6 h-6 text-white/60" strokeWidth={1.5} />
-                {t.severityPrompt || "How severe are your symptoms right now?"}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <div className="h-px w-12 bg-gradient-to-r from-transparent to-white/20"></div>
+                <h3 className="text-sm font-medium text-white/60 uppercase tracking-widest flex items-center gap-2">
+                  <Activity className="w-4 h-4" strokeWidth={2} />
+                  {t.severityPrompt || "Select Severity"}
+                </h3>
+                <div className="h-px w-12 bg-gradient-to-l from-transparent to-white/20"></div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <button 
                   onClick={() => handleSeveritySelect('Mild')}
-                  className="group p-6 rounded-[2rem] liquid-glass hover:bg-white/20 text-white transition-all duration-500 border border-white/10 hover:border-white/30 hover:scale-105 shadow-xl flex flex-col items-center text-center"
+                  className="group p-5 rounded-2xl bg-black/20 hover:bg-white/10 text-white transition-all duration-300 border border-white/10 hover:border-white/30 flex flex-col items-center text-center backdrop-blur-md"
                 >
-                  <span className="text-lg font-medium tracking-tight mb-2">{t.severityMild || "Mild"}</span>
-                  <span className="text-sm font-light text-white/60">{t.severityMildDesc || "Can wait"}</span>
+                  <span className="text-base font-medium tracking-tight mb-1">{t.severityMild || "Mild"}</span>
+                  <span className="text-xs font-light text-white/50">{t.severityMildDesc || "Can wait"}</span>
                 </button>
                 <button 
                   onClick={() => handleSeveritySelect('Moderate')}
-                  className="group p-6 rounded-[2rem] liquid-glass hover:bg-white/20 text-white transition-all duration-500 border border-white/10 hover:border-white/30 hover:scale-105 shadow-xl flex flex-col items-center text-center"
+                  className="group p-5 rounded-2xl bg-black/20 hover:bg-white/10 text-white transition-all duration-300 border border-white/10 hover:border-white/30 flex flex-col items-center text-center backdrop-blur-md"
                 >
-                  <span className="text-lg font-medium tracking-tight mb-2">{t.severityModerate || "Moderate"}</span>
-                  <span className="text-sm font-light text-white/60">{t.severityModerateDesc || "Needs attention"}</span>
+                  <span className="text-base font-medium tracking-tight mb-1">{t.severityModerate || "Moderate"}</span>
+                  <span className="text-xs font-light text-white/50">{t.severityModerateDesc || "Needs attention"}</span>
                 </button>
                 <button 
                   onClick={() => handleSeveritySelect('Severe')}
-                  className="group p-6 rounded-[2rem] liquid-glass hover:bg-white/20 text-white transition-all duration-500 border border-white/10 hover:border-white/30 hover:scale-105 shadow-[0_8px_32px_rgba(255,255,255,0.1)] flex flex-col items-center text-center"
+                  className="group p-5 rounded-2xl bg-black/20 hover:bg-white/10 text-white transition-all duration-300 border border-white/10 hover:border-red-500/50 flex flex-col items-center text-center backdrop-blur-md relative overflow-hidden"
                 >
-                  <span className="text-lg font-medium tracking-tight mb-2">{t.severitySevere || "Severe"}</span>
-                  <span className="text-sm font-light text-white/60">{t.severitySevereDesc || "Urgent care"}</span>
+                  <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <span className="text-base font-medium tracking-tight mb-1 relative z-10">{t.severitySevere || "Severe"}</span>
+                  <span className="text-xs font-light text-white/50 relative z-10">{t.severitySevereDesc || "Urgent care"}</span>
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
       </div>
     </div>
   );

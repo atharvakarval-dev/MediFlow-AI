@@ -92,7 +92,7 @@ export function Layout() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="pt-28 pb-10 min-h-full flex flex-col"
+            className="pt-24 pb-10 min-h-full flex flex-col"
           >
             <Outlet />
           </motion.div>
