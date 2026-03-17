@@ -123,65 +123,79 @@ export function Triage() {
           </div>
         </div>
 
-        <div className="space-y-8 h-full">
-          <div className="liquid-glass-strong rounded-[2.5rem] p-10 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden flex flex-col h-full">
-            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-white/5 blur-[120px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="h-fit sticky top-8">
+          <div className="liquid-glass-strong rounded-[2.5rem] p-10 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden flex flex-col">
+            <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
             
-            <div className="relative z-10 flex flex-col h-full">
-              <h2 className="text-2xl font-medium mb-8 flex items-center gap-3 text-white tracking-tight">
-                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
-                  <MapPin className="w-5 h-5 text-white" strokeWidth={1.5} />
+            <div className="relative z-10 flex flex-col">
+              {/* Header */}
+              <div className="flex items-center gap-4 mb-10 pb-6 border-b border-white/10 shrink-0">
+                <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
+                  <MapPin className="w-6 h-6 text-white" strokeWidth={2} />
                 </div>
-                {t.nextDest}
-              </h2>
+                <h2 className="text-3xl font-medium text-white tracking-tight">{t.nextDest}</h2>
+              </div>
               
-              <div className="liquid-glass p-8 rounded-[2rem] mb-10 flex-1 border border-white/10 shadow-inner flex flex-col justify-center gap-8">
+              {/* Main Content Area */}
+              <div className="flex flex-col gap-10">
+                
+                {/* Destination */}
                 <div>
-                  <p className="text-white/50 text-xs tracking-widest uppercase mb-3 flex items-center gap-2">
-                    <ArrowRight className="w-3 h-3" /> {t.proceedTo}
+                  <p className="text-white/50 text-xs font-medium tracking-widest uppercase mb-4 flex items-center gap-2">
+                    <ArrowRight className="w-3.5 h-3.5" /> {t.proceedTo}
                   </p>
-                  <p className="text-3xl lg:text-4xl font-medium text-white tracking-tight leading-tight">{currentPatient.nextDestination}</p>
+                  <p className="text-3xl sm:text-4xl font-medium text-white tracking-tight leading-tight">
+                    {currentPatient.nextDestination}
+                  </p>
                 </div>
                 
-                <div className="h-px w-full bg-white/10"></div>
+                {/* Separator */}
+                <div className="h-px w-full bg-gradient-to-r from-white/20 to-transparent"></div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
-                  <div className="col-span-2">
-                    <p className="text-white/50 text-xs tracking-widest uppercase mb-2">{t.assignedTo}</p>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                        <span className="text-white font-medium text-sm">
+                {/* Assignment & Details */}
+                <div className="space-y-8">
+                  {/* Doctor */}
+                  <div>
+                    <p className="text-white/50 text-xs font-medium tracking-widest uppercase mb-4">{t.assignedTo}</p>
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center border border-white/20 shrink-0 shadow-inner">
+                        <span className="text-white font-medium text-xl">
                           {currentPatient.assignedDoctor.replace('Dr. ', '').charAt(0)}
                         </span>
                       </div>
-                      <p className="font-medium text-white text-xl tracking-tight">{currentPatient.assignedDoctor}</p>
+                      <p className="font-medium text-white text-xl tracking-tight leading-snug">{currentPatient.assignedDoctor}</p>
                     </div>
                   </div>
                   
-                  <div>
-                    <p className="text-white/50 text-xs tracking-widest uppercase mb-2">{t.patientId}</p>
-                    <p className="font-medium text-white/90 text-base tracking-tight bg-white/5 px-3 py-1.5 rounded-lg inline-block border border-white/10">{currentPatient.id}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-white/50 text-xs tracking-widest uppercase mb-2">{t.estWaitTime}</p>
-                    <p className="font-medium text-white/90 text-base tracking-tight bg-white/5 px-3 py-1.5 rounded-lg inline-flex items-center gap-2 border border-white/10">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                      </span>
-                      ~15 mins
-                    </p>
+                  {/* ID and Wait Time */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="liquid-glass p-5 rounded-3xl border border-white/10 flex flex-col justify-center">
+                      <p className="text-white/50 text-[10px] uppercase font-medium tracking-wider mb-2">{t.patientId}</p>
+                      <p className="font-medium text-white/90 text-sm tracking-widest">{currentPatient.id}</p>
+                    </div>
+                    
+                    <div className="liquid-glass p-5 rounded-3xl border border-white/10 flex flex-col justify-center">
+                      <p className="text-white/50 text-[10px] uppercase font-medium tracking-wider mb-2">{t.estWaitTime}</p>
+                      <div className="font-medium text-emerald-400 text-sm tracking-tight flex items-center gap-2.5">
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span>~15 mins</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                
               </div>
               
+              {/* Button */}
               <button 
                 onClick={() => navigate('/navigate')}
-                className="group w-full bg-white hover:bg-gray-100 text-black px-8 py-5 rounded-full font-medium text-lg flex items-center justify-center gap-3 transition-all duration-500 hover:scale-105 mt-auto shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                className="group w-full bg-white hover:bg-gray-100 text-black px-8 py-5 rounded-full font-medium text-lg flex items-center justify-center gap-3 transition-all duration-300 hover:scale-[1.02] mt-10 shrink-0 shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-[0.98]"
               >
-                {t.startNav} 
-                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center group-hover:translate-x-1 transition-transform duration-500">
+                <span>{t.startNav}</span>
+                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center group-hover:translate-x-1 transition-transform duration-300">
                   <ArrowRight className="w-4 h-4 text-white" strokeWidth={2} />
                 </div>
               </button>
