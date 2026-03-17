@@ -43,6 +43,7 @@ const SYMPTOM_TO_SPECIALTY: Record<string, string> = {
   'Shortness of Breath': 'Cardiologist',
   'Palpitations': 'Cardiologist',
   'High Blood Pressure': 'Cardiologist',
+  'Heart': 'Cardiologist',
   
   // Neurology
   'Severe Headache': 'Neurologist',
@@ -50,6 +51,7 @@ const SYMPTOM_TO_SPECIALTY: Record<string, string> = {
   'Neck Stiffness': 'Neurologist',
   'Numbness': 'Neurologist',
   'Seizures': 'Neurologist',
+  'Brain': 'Neurologist',
   
   // Gastroenterology
   'Stomach Pain': 'Gastroenterologist',
@@ -57,28 +59,38 @@ const SYMPTOM_TO_SPECIALTY: Record<string, string> = {
   'Vomiting': 'Gastroenterologist',
   'Diarrhea': 'Gastroenterologist',
   'Heartburn': 'Gastroenterologist',
+  'Stomach': 'Gastroenterologist',
+  'Belly': 'Gastroenterologist',
   
   // Orthopedics
   'Fracture': 'Orthopedic',
   'Joint Pain': 'Orthopedic',
   'Back Pain': 'Orthopedic',
   'Muscle Spasm': 'Orthopedic',
+  'Bone': 'Orthopedic',
+  'Knee': 'Orthopedic',
   
   // Dermatology
   'Skin Rash': 'Dermatologist',
   'Itching': 'Dermatologist',
   'Acne': 'Dermatologist',
   'Skin Lesion': 'Dermatologist',
+  'Skin': 'Dermatologist',
   
   // ENT
   'Ear Ache': 'ENT Specialist',
   'Sore Throat': 'ENT Specialist',
   'Sinus Pressure': 'ENT Specialist',
   'Hearing Loss': 'ENT Specialist',
+  'Ear': 'ENT Specialist',
+  'Throat': 'ENT Specialist',
+  'Nose': 'ENT Specialist',
   
   // Pediatrics (usually age-based, but adding some specific symptoms)
   'Childhood Fever': 'Pediatrician',
   'Colic': 'Pediatrician',
+  'Child': 'Pediatrician',
+  'Baby': 'Pediatrician',
   
   // General Physician (High frequency)
   'Fever': 'General Physician',
@@ -86,37 +98,45 @@ const SYMPTOM_TO_SPECIALTY: Record<string, string> = {
   'Fatigue': 'General Physician',
   'Body Ache': 'General Physician',
   'Mild Headache': 'General Physician',
-  'Cold': 'General Physician'
+  'Cold': 'General Physician',
+  'Flu': 'General Physician'
 };
 
 export function allocateDoctor(
   symptoms: string[],
   priority: 'Low' | 'Medium' | 'High' | 'Critical',
   currentQueue: Patient[],
-  severity?: 'Mild' | 'Moderate' | 'Severe'
+  severity?: 'Mild' | 'Moderate' | 'Severe',
+  transcript?: string,
+  suggestedSpecialty?: string
 ): { doctor: Doctor; score: number; reason: string } {
   // 1. Determine required specialty
-  const specialtyCounts: Record<string, number> = {};
-  symptoms.forEach(symptom => {
-    // Basic NLP matching (case insensitive, partial match)
-    let matchedSpecialty = 'General Physician';
-    for (const [key, spec] of Object.entries(SYMPTOM_TO_SPECIALTY)) {
-      if (symptom.toLowerCase().includes(key.toLowerCase())) {
-        matchedSpecialty = spec;
-        break;
-      }
-    }
-    specialtyCounts[matchedSpecialty] = (specialtyCounts[matchedSpecialty] || 0) + 1;
-  });
-
   let requiredSpecialty = 'General Physician';
-  let maxCount = 0;
-  Object.entries(specialtyCounts).forEach(([specialty, count]) => {
-    if (count > maxCount) {
-      maxCount = count;
-      requiredSpecialty = specialty;
-    }
-  });
+  
+  if (suggestedSpecialty && SPECIALTIES.includes(suggestedSpecialty)) {
+    requiredSpecialty = suggestedSpecialty;
+  } else {
+    const specialtyCounts: Record<string, number> = {};
+    symptoms.forEach(symptom => {
+      // Basic NLP matching (case insensitive, partial match)
+      let matchedSpecialty = 'General Physician';
+      for (const [key, spec] of Object.entries(SYMPTOM_TO_SPECIALTY)) {
+        if (symptom.toLowerCase().includes(key.toLowerCase())) {
+          matchedSpecialty = spec;
+          break;
+        }
+      }
+      specialtyCounts[matchedSpecialty] = (specialtyCounts[matchedSpecialty] || 0) + 1;
+    });
+
+    let maxCount = 0;
+    Object.entries(specialtyCounts).forEach(([specialty, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        requiredSpecialty = specialty;
+      }
+    });
+  }
 
   // 2. Calculate current load for each doctor
   const doctorLoads: Record<string, number> = {};

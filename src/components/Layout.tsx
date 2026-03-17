@@ -1,7 +1,9 @@
+import { useState, useRef } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Activity, Stethoscope, Navigation2, Mic, User, Home } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,6 +11,14 @@ export function cn(...inputs: ClassValue[]) {
 
 export function Layout() {
   const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const mainRef = useRef<HTMLElement>(null);
+
+  const handleScroll = () => {
+    if (mainRef.current) {
+      setIsScrolled(mainRef.current.scrollTop > 20);
+    }
+  };
 
   const navItems = [
     { path: '/', icon: Home, label: 'Welcome' },
@@ -20,43 +30,77 @@ export function Layout() {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50 text-slate-900 font-sans">
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-2">
-          <div className="bg-indigo-600 p-2 rounded-lg">
-            <Activity className="w-6 h-6 text-white" />
+    <div className="flex flex-col h-screen text-white font-sans relative overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed inset-0 w-full h-full object-cover -z-10 opacity-80 pointer-events-none"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4"
+      />
+      
+      {/* Floating Pill Navigation */}
+      <div className={cn(
+        "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full max-w-fit px-4 pointer-events-none",
+        isScrolled ? "top-4" : "top-8"
+      )}>
+        <header className={cn(
+          "pointer-events-auto flex items-center gap-2 sm:gap-4 rounded-full border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-all duration-500 mx-auto",
+          isScrolled ? "bg-black/60 py-2 px-3" : "bg-black/40 py-2.5 px-4"
+        )}>
+          <div className="flex items-center gap-3 pl-2 pr-4 border-r border-white/10">
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center shadow-inner border border-white/5">
+              <Activity className="w-4 h-4 text-white" />
+            </div>
+            <h1 className="text-base font-medium tracking-tight text-white hidden sm:block whitespace-nowrap">MedFlow AI</h1>
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">MedFlow AI</h1>
-        </div>
-        <nav className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-                  isActive 
-                    ? "bg-indigo-50 text-indigo-700" 
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                )}
-              >
-                <Icon className="w-4 h-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </header>
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300",
+                    isActive 
+                      ? "bg-white/15 text-white shadow-[0_0_15px_rgba(255,255,255,0.05)] border border-white/10" 
+                      : "text-white/60 hover:text-white hover:bg-white/10 border border-transparent"
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </header>
+      </div>
 
-      <main className="flex-1 overflow-y-auto relative">
-        <Outlet />
+      <main 
+        ref={mainRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto relative z-10 w-full h-full"
+      >
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="pt-28 pb-10 min-h-full flex flex-col"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Mobile Navigation */}
-      <nav className="md:hidden bg-white border-t border-slate-200 flex items-center justify-around p-2 pb-safe sticky bottom-0 z-10">
+      <nav className="md:hidden liquid-glass-strong m-4 rounded-3xl flex items-center justify-around p-2 pb-safe fixed bottom-0 left-0 right-0 z-50">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -65,8 +109,8 @@ export function Layout() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-lg transition-colors",
-                isActive ? "text-indigo-600" : "text-slate-500"
+                "flex flex-col items-center justify-center p-2 rounded-xl transition-colors",
+                isActive ? "text-white bg-white/20" : "text-white/50 hover:text-white"
               )}
             >
               <Icon className="w-5 h-5 mb-1" />
