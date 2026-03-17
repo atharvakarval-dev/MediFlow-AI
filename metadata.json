@@ -1,0 +1,5 @@
+{
+  "name": "MedFlow AI",
+  "description": "A voice-first hospital navigation and triage system.",
+  "requestFramePermissions": ["microphone"]
+}
