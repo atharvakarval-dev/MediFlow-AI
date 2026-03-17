@@ -90,7 +90,12 @@ export function Navigation() {
                   {t.wait} <span className="text-white font-medium">{currentPatient.assignedDoctor}</span>.
                 </p>
                 <button 
-                  onClick={() => navigate('/')}
+                  onClick={() => {
+                    if (currentPatient) {
+                      useAppStore.getState().addPatientToQueue(currentPatient);
+                    }
+                    navigate('/');
+                  }}
                   className="w-full bg-white hover:bg-gray-100 text-black px-8 py-4 rounded-full font-medium text-lg transition-all duration-300 hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
                   {t.finish}
