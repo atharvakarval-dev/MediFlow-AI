@@ -14,10 +14,16 @@ export function DoctorDashboard() {
   // Form state
   const [followUpDate, setFollowUpDate] = useState('');
   const [followUpTime, setFollowUpTime] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [selectedDoctorId, setSelectedDoctorId] = useState('');
   const [followUpNotes, setFollowUpNotes] = useState('');
 
   const t = translations[language].dashboard;
+
+  const specialties = Array.from(new Set(DOCTORS.map(d => d.specialty))).sort();
+  const filteredDoctors = selectedSpecialty 
+    ? DOCTORS.filter(d => d.specialty === selectedSpecialty)
+    : DOCTORS;
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -333,21 +339,39 @@ export function DoctorDashboard() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-1">{t.specialist || "Specialist / Doctor"}</label>
-                    <select 
-                      required
-                      value={selectedDoctorId}
-                      onChange={(e) => setSelectedDoctorId(e.target.value)}
-                      className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-                    >
-                      <option value="">{t.selectDoctor || "Select a doctor..."}</option>
-                      {DOCTORS.map(doc => (
-                        <option key={doc.id} value={doc.id}>
-                          {doc.name} - {doc.specialty}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">{t.specialty || "Filter by Specialty"}</label>
+                      <select 
+                        value={selectedSpecialty}
+                        onChange={(e) => {
+                          setSelectedSpecialty(e.target.value);
+                          setSelectedDoctorId('');
+                        }}
+                        className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                      >
+                        <option value="">{t.allSpecialties || "All Specialties"}</option>
+                        {specialties.map(spec => (
+                          <option key={spec} value={spec}>{spec}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-slate-700 mb-1">{t.specialist || "Specialist / Doctor"}</label>
+                      <select 
+                        required
+                        value={selectedDoctorId}
+                        onChange={(e) => setSelectedDoctorId(e.target.value)}
+                        className="w-full p-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+                      >
+                        <option value="">{t.selectDoctor || "Select a doctor..."}</option>
+                        {filteredDoctors.map(doc => (
+                          <option key={doc.id} value={doc.id}>
+                            {doc.name} - {doc.specialty}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div>
