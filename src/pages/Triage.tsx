@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Activity, Stethoscope, ArrowRight, CheckCircle2, MapPin } from 'lucide-react';
+import { AlertTriangle, Activity, Stethoscope, ArrowRight, CircleCheck, MapPin } from 'lucide-react';
 import { useAppStore } from '../store/appStore';
 import { translations } from '../utils/translations';
 
@@ -29,10 +29,7 @@ export function Triage() {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+    <div 
       className="max-w-6xl mx-auto px-6 py-12"
     >
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6 liquid-glass-strong p-10 rounded-[2.5rem] border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl relative overflow-hidden">
@@ -101,7 +98,7 @@ export function Triage() {
                 {currentPatient.recommendedTests.map((test, idx) => (
                   <li key={idx} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
                     <div className="mt-0.5 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                      <CheckCircle2 className="w-4 h-4 text-white/80" strokeWidth={2} />
+                      <CircleCheck className="w-4 h-4 text-white/80" strokeWidth={2} />
                     </div>
                     <div>
                       <span className="font-medium text-white text-lg block mb-1 tracking-tight">{test}</span>
@@ -153,6 +150,6 @@ export function Triage() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ScanFace, CreditCard, Keyboard, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ScanFace, CreditCard, Keyboard, ArrowRight } from 'lucide-react';
 import { useAppStore } from '../store/appStore';
 import { translations } from '../utils/translations';
 
@@ -48,19 +48,25 @@ export function PatientId() {
   };
 
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      exit={{ opacity: 0, scale: 0.95 }}
-      variants={containerVariants}
+    <div 
       className="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-[80vh]"
     >
-      <motion.div variants={itemVariants} className="mb-12 text-center max-w-2xl">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={itemVariants} 
+        className="mb-12 text-center max-w-2xl"
+      >
         <h1 className="text-4xl sm:text-5xl font-medium text-white mb-4 tracking-tight">{t.title}</h1>
         <p className="text-lg sm:text-xl text-white/60 font-serif italic font-light">{t.subtitle}</p>
       </motion.div>
 
-      <motion.div variants={containerVariants} className="grid md:grid-cols-3 gap-6 w-full mb-12">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants} 
+        className="grid md:grid-cols-3 gap-6 w-full mb-12"
+      >
         <button 
           onClick={() => setMethod('scan')}
           className={`group p-8 rounded-[2.5rem] flex flex-col items-center text-center transition-all duration-500 relative overflow-hidden border ${method === 'scan' ? 'bg-white/20 border-white/30 shadow-[0_8px_32px_rgba(0,0,0,0.5)] scale-105' : 'liquid-glass hover:bg-black/50 shadow-xl'} backdrop-blur-md`}
@@ -142,6 +148,6 @@ export function PatientId() {
           )}
         </motion.div>
       )}
-    </motion.div>
+    </div>
   );
 }

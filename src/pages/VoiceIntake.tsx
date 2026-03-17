@@ -196,10 +196,7 @@ export function VoiceIntake() {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
+    <div 
       className="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-[80vh]"
     >
       <div className="text-center mb-12 max-w-2xl">
@@ -348,6 +345,6 @@ export function VoiceIntake() {
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </div>
   );
 }

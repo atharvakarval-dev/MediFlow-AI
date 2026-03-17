@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Clock, AlertCircle, Search, Filter, Stethoscope, Activity, FileText, Calendar, X, CheckCircle2, Bell, ChevronRight } from 'lucide-react';
+import { Users, Clock, AlertCircle, Search, Filter, Stethoscope, Activity, FileText, Calendar, X, CircleCheck, Bell, ChevronRight } from 'lucide-react';
 import { useAppStore, type Patient } from '../store/appStore';
 import { translations } from '../utils/translations';
 import { DOCTORS } from '../utils/doctorAllocation';
@@ -376,7 +376,7 @@ export function DoctorDashboard() {
             className="absolute top-6 right-1/2 translate-x-1/2 liquid-glass-strong text-white px-5 py-3 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/20 flex items-center gap-3 z-50 backdrop-blur-xl"
           >
             <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" strokeWidth={2} />
+              <CircleCheck className="w-4 h-4 text-emerald-400" strokeWidth={2} />
             </div>
             <span className="font-medium text-sm tracking-tight">{t.followUpSuccess || "Follow-up appointment scheduled successfully."}</span>
           </motion.div>

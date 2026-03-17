@@ -40,10 +40,7 @@ export function Navigation() {
   const isArrived = step >= routeSteps.length;
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+    <div 
       className="max-w-7xl mx-auto px-4 sm:px-6 py-8 h-full flex flex-col"
     >
       {/* Header */}
@@ -199,6 +196,6 @@ export function Navigation() {
         </div>
 
       </div>
-    </motion.div>
+    </div>
   );
 }
