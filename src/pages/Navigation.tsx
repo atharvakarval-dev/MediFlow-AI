@@ -60,7 +60,7 @@ export function Navigation() {
       <div className="flex-1 grid lg:grid-cols-12 gap-6 min-h-0">
         
         {/* Left Panel - Live Map / Status */}
-        <div className="lg:col-span-7 liquid-glass-strong rounded-[2rem] border border-white/10 overflow-hidden relative flex flex-col items-center justify-center min-h-[400px]">
+        <div className="lg:col-span-7 liquid-glass-strong rounded-[2rem] border border-white/10 overflow-hidden relative flex flex-col items-center justify-center min-h-[450px] lg:min-h-[500px]">
           {/* Atmospheric Grid Background */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_80%_at_50%_50%,#000_20%,transparent_100%)]"></div>
           
@@ -101,29 +101,47 @@ export function Navigation() {
               ) : (
                 <motion.div 
                   key={step}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 1.1, y: -20 }}
+                  transition={{ duration: 0.5, type: "spring" }}
                   className="flex flex-col items-center w-full"
                 >
-                  <div className="w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-8 relative">
+                  <div className="relative mb-12">
+                    {/* Radar sweep effect */}
                     <motion.div 
-                      animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                      className="absolute inset-0 rounded-full bg-white/20"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-[-40px] rounded-full border-t border-white/30 bg-gradient-to-t from-transparent to-white/5 [mask-image:linear-gradient(to_top,transparent,black)]"
                     />
-                    <div className="absolute inset-[-20px] rounded-full border border-white/5"></div>
-                    {(() => {
-                      const CurrentIcon = routeSteps[step]?.icon;
-                      return CurrentIcon ? <CurrentIcon className="w-14 h-14 text-white relative z-10" strokeWidth={1.5} /> : null;
-                    })()}
+                    {/* Pulsing rings */}
+                    {[1, 2, 3].map((i) => (
+                      <motion.div
+                        key={i}
+                        animate={{ scale: [1, 2], opacity: [0.5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.6, ease: "easeOut" }}
+                        className="absolute inset-0 rounded-full border border-white/20"
+                      />
+                    ))}
+                    <div className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center relative z-10 shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                      {(() => {
+                        const CurrentIcon = routeSteps[step]?.icon;
+                        return CurrentIcon ? (
+                          <motion.div
+                            animate={{ y: [-5, 5, -5] }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                          >
+                            <CurrentIcon className="w-14 h-14 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" strokeWidth={2} />
+                          </motion.div>
+                        ) : null;
+                      })()}
+                    </div>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-medium text-white mb-6 tracking-tight leading-tight">
+                  <h2 className="text-3xl sm:text-4xl font-medium text-white mb-6 tracking-tight leading-tight drop-shadow-md">
                     {routeSteps[step]?.instruction}
                   </h2>
-                  <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10">
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                  <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse shadow-[0_0_10px_rgba(255,255,255,1)]"></div>
                     <p className="text-white/80 font-mono text-sm tracking-widest uppercase">{routeSteps[step]?.distance}</p>
                   </div>
                 </motion.div>
@@ -141,7 +159,7 @@ export function Navigation() {
             <h3 className="text-2xl font-medium text-white tracking-tight">{t.routeDetails}</h3>
           </div>
           
-          <div className="flex-1 overflow-y-auto pr-4 relative z-10 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="flex-1 overflow-y-auto pl-6 -ml-6 pt-6 -mt-6 pb-6 -mb-6 pr-4 relative z-10 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
             <ul className="relative">
               {routeSteps.map((routeStep, idx) => {
                 const isCompleted = idx < step;
@@ -151,14 +169,22 @@ export function Navigation() {
                 return (
                   <li key={idx} className="relative flex gap-6 pb-12">
                     {/* Connecting Line - perfectly aligned to start at bottom of circle and end at top of next circle */}
-                    <div className={`absolute left-[19px] top-[40px] bottom-0 w-[2px] transition-colors duration-500 ${isCompleted ? 'bg-white/20' : 'bg-white/5'}`}></div>
+                    <div className={`absolute left-[19px] top-[40px] bottom-0 w-[2px] transition-colors duration-500 overflow-hidden ${isCompleted ? 'bg-emerald-500/40' : 'bg-white/10'}`}>
+                      {isCurrent && (
+                        <motion.div 
+                          className="w-full h-1/2 bg-gradient-to-b from-transparent via-emerald-400 to-transparent opacity-60"
+                          animate={{ y: ['-100%', '200%'] }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                        />
+                      )}
+                    </div>
                     
                     {/* Icon Node */}
                     <div className="relative z-10 flex flex-col items-center">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border transition-all duration-500 ${
-                        isCompleted ? 'bg-white/5 border-white/20 text-white/60' : 
-                        isCurrent ? 'bg-white border-white text-black ring-4 ring-white/10' : 
-                        'bg-black/20 border-white/10 text-white/30'
+                        isCompleted ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 
+                        isCurrent ? 'bg-white border-white text-black shadow-[0_0_30px_rgba(255,255,255,0.4)] ring-4 ring-white/20' : 
+                        'bg-black/40 border-white/10 text-white/30'
                       }`}>
                         {isCompleted ? <Check className="w-5 h-5" strokeWidth={2} /> : <Icon className="w-5 h-5" strokeWidth={isCurrent ? 2 : 1.5} />}
                       </div>
@@ -179,7 +205,7 @@ export function Navigation() {
               <li className="relative flex gap-6">
                 <div className="relative z-10 flex flex-col items-center">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border transition-all duration-500 ${
-                    isArrived ? 'bg-emerald-500 border-emerald-400 text-black ring-4 ring-emerald-500/20' : 'bg-black/20 border-white/10 text-white/30'
+                    isArrived ? 'bg-emerald-500 border-emerald-400 text-black shadow-[0_0_30px_rgba(16,185,129,0.4)] ring-4 ring-emerald-500/20' : 'bg-black/40 border-white/10 text-white/30'
                   }`}>
                     <MapPin className="w-5 h-5" strokeWidth={isArrived ? 2 : 1.5} />
                   </div>

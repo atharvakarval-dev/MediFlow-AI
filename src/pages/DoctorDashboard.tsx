@@ -9,6 +9,7 @@ export function DoctorDashboard() {
   const { patientsQueue, language, updatePatientInQueue } = useAppStore();
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(patientsQueue[0] || null);
   const [isScheduling, setIsScheduling] = useState(false);
+  const [isViewingHistory, setIsViewingHistory] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   
   // Form state
@@ -74,6 +75,12 @@ export function DoctorDashboard() {
   };
 
   // Mock data for new sections
+  const mockHistory = [
+    { id: 1, date: '2025-10-12', diagnosis: 'Upper Respiratory Infection', treatment: 'Amoxicillin 500mg, Rest', doctor: 'Dr. Sarah Smith' },
+    { id: 2, date: '2025-06-04', diagnosis: 'Annual Physical', treatment: 'Routine blood work, Vaccinations updated', doctor: 'Dr. Michael Chen' },
+    { id: 3, date: '2024-11-20', diagnosis: 'Sprained Ankle', treatment: 'RICE protocol, Ibuprofen, Physical therapy referral', doctor: 'Dr. Emily Jones' },
+  ];
+
   const alerts = [
     { id: 1, type: 'critical', message: 'Lab results ready for Patient P-1042 (Critical)', time: '10m ago' },
     { id: 2, type: 'warning', message: 'Dr. Smith requested consult for P-8831', time: '1h ago' },
@@ -189,7 +196,10 @@ export function DoctorDashboard() {
                       </div>
                     </div>
                     <div className="flex gap-3 shrink-0">
-                      <button className="px-5 py-2.5 liquid-glass border border-white/10 rounded-xl text-white text-sm font-medium hover:bg-white/10 transition-all duration-300 shadow-sm">
+                      <button 
+                        onClick={() => setIsViewingHistory(true)}
+                        className="px-5 py-2.5 liquid-glass border border-white/10 rounded-xl text-white text-sm font-medium hover:bg-white/10 transition-all duration-300 shadow-sm"
+                      >
                         {t.viewHistory}
                       </button>
                       <button className="px-5 py-2.5 bg-white hover:bg-gray-100 text-black rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:scale-105">
@@ -381,6 +391,69 @@ export function DoctorDashboard() {
               <CircleCheck className="w-4 h-4 text-emerald-400" strokeWidth={2} />
             </div>
             <span className="font-medium text-sm tracking-tight">{t.followUpSuccess || "Follow-up appointment scheduled successfully."}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* History Modal */}
+      <AnimatePresence>
+        {isViewingHistory && selectedPatient && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="liquid-glass-strong rounded-[2rem] border border-white/10 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] shadow-[0_16px_64px_rgba(0,0,0,0.5)] relative"
+            >
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+              
+              <div className="p-6 border-b border-white/10 flex items-center justify-between relative z-10">
+                <h2 className="text-xl font-medium text-white flex items-center gap-3 tracking-tight">
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 shadow-inner">
+                    <FileText className="w-4 h-4 text-white" strokeWidth={1.5} />
+                  </div>
+                  Patient History: {selectedPatient.name}
+                </h2>
+                <button 
+                  onClick={() => setIsViewingHistory(false)}
+                  className="w-8 h-8 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300"
+                >
+                  <X className="w-4 h-4" strokeWidth={2} />
+                </button>
+              </div>
+              
+              <div className="p-6 overflow-y-auto relative z-10 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full">
+                <div className="space-y-6">
+                  {mockHistory.map((record, index) => (
+                    <div key={record.id} className="relative pl-8 pb-6 border-l border-white/10 last:border-transparent last:pb-0">
+                      <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-white/20 border border-white/50 shadow-[0_0_10px_rgba(255,255,255,0.2)]"></div>
+                      <div className="liquid-glass p-5 rounded-xl border border-white/5 hover:bg-white/5 transition-colors">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="text-lg font-medium text-white tracking-tight">{record.diagnosis}</h4>
+                          <span className="text-xs font-mono text-white/50 bg-black/20 px-2.5 py-1 rounded-md border border-white/5">{record.date}</span>
+                        </div>
+                        <div className="space-y-3">
+                          <div>
+                            <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest block mb-1">Treatment</span>
+                            <p className="text-sm text-white/80 font-light">{record.treatment}</p>
+                          </div>
+                          <div className="pt-3 border-t border-white/5 flex items-center gap-2">
+                            <Stethoscope className="w-3.5 h-3.5 text-white/40" />
+                            <span className="text-xs text-white/50 font-light">{record.doctor}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
